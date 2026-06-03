@@ -1,0 +1,4 @@
+ID- admin@akshay.com
+PASSWORD-123456
+ID- demo.jobseeker@example.com
+PASSWORD- Demo@123
