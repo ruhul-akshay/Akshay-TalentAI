@@ -15,6 +15,7 @@ export default function Navbar() {
     { name: 'Jobs', href: '/jobs', icon: '💼' },
     { name: 'Candidates', href: '/candidates', icon: '👥' },
     { name: 'Master Data', href: '/candidates-database', icon: '🗄️' },
+     { name: 'Interviews', href: '/interviews', icon: '🎙️' },
   ];
 
   const jobSeekerNavigation = [

@@ -178,6 +178,7 @@ router.get('/saved-jobs', authenticateToken, async (req, res) => {
 // Get interviews
 router.get('/interviews', authenticateToken, async (req, res) => {
   try {
+    console.log("User:", req.user);
     const interviews = await Interview.find({ applicant: req.user._id })
       .populate('job', 'title department')
       .populate('application', 'status')

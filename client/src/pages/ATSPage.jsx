@@ -507,7 +507,7 @@ export default function ATSPage() {
                   <h4 className="text-lg font-semibold text-white">Uploaded Files ({uploadedResumes.length})</h4>
                   {uploadedResumes.map((file, index) => (
                     <div key={index} className="flex items-center justify-between p-4 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10">
-                      <div className="flex items-center space-x-3">
+                       <div className="flex items-center space-x-3">
                         <div className="text-2xl">{file.type === 'application/pdf' ? '📄' : '📝'}</div>
                         <div>
                           <p className="text-white font-medium">{file.name}</p>
@@ -801,13 +801,14 @@ export default function ATSPage() {
                               `http://localhost:8000${application.applicant.profile.resume.fileUrl}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-lg font-medium transition-all duration-300 hover:scale-105"
+                            className="px-4 py-2  
+                             bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-lg font-medium transition-all duration-300 hover:scale-105"
                           >
                             📄 View Resume
                           </a>
                         )}
                         {application.status === 'pending' && (
-                          <button onClick={() => updateCandidateStatus(application._id, 'reviewing')}
+                          <button onClick={() => updateCandidateStatus(application._id, 'reviewing')} 
                             className="px-4 py-2 bg-gradient-to-r from-yellow-500 to-orange-600 text-white rounded-lg font-medium transition-all">
                             📋 Review
                           </button>

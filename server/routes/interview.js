@@ -2,12 +2,13 @@
 
 import express from "express";
 import Interview from "../models/Interview.js";
-import Application from "../models/Application.js";
+import Application from "../models/JobApplication.js";
 
 const router = express.Router();
 
 router.post("/create", async (req, res) => {
   try {
+    console.log("Request Body:", req.body);
     const { applicationId, scheduledDate, meetingLink } = req.body;
 
     const application = await Application.findById(applicationId);
@@ -52,7 +53,7 @@ router.post("/create", async (req, res) => {
   }
 });
 
-router.get("/my-interviews/:userId", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const interviews = await Interview.find({
       applicant: req.params.userId,

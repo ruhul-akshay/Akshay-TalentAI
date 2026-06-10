@@ -1,18 +1,24 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
-import AuthPage from './pages/AuthPage';
-import DashboardPage from './pages/DashboardPage';
-import JobSeekerDashboard from './pages/JobSeekerDashboard';
-import ProfilePage from './pages/ProfilePage';
-import CandidatesDatabasePage from './pages/MasterData';
-import ATSPage from './pages/ATSPage';
-import AnalyticsPage from './pages/AnalyticsPage';
-import JobsPage from './pages/JobsPage';
-import JobSeekerJobsPage from './pages/JobSeekerJobsPage';
-import CandidatesPage from './pages/CandidatesPage';
-import ProtectedRoute from './components/ProtectedRoute';
-import './App.css';
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import AuthPage from "./pages/AuthPage";
+import DashboardPage from "./pages/DashboardPage";
+import JobSeekerDashboard from "./pages/JobSeekerDashboard";
+import ProfilePage from "./pages/ProfilePage";
+import CandidatesDatabasePage from "./pages/MasterData";
+import ATSPage from "./pages/ATSPage";
+import AnalyticsPage from "./pages/AnalyticsPage";
+import JobsPage from "./pages/JobsPage";
+import InterviewPage from "./pages/InterviewPage";
+import JobSeekerJobsPage from "./pages/JobSeekerJobsPage";
+import CandidatesPage from "./pages/CandidatesPage";
+import ProtectedRoute from "./components/ProtectedRoute";
+import "./App.css";
 
 // Error Boundary Component
 class ErrorBoundary extends React.Component {
@@ -26,7 +32,7 @@ class ErrorBoundary extends React.Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    console.error('Error caught by boundary:', error, errorInfo);
+    console.error("Error caught by boundary:", error, errorInfo);
   }
 
   render() {
@@ -35,9 +41,12 @@ class ErrorBoundary extends React.Component {
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
           <div className="glass-card p-8 max-w-md mx-auto text-center">
             <div className="text-6xl mb-4">⚠️</div>
-            <h2 className="text-2xl font-bold text-white mb-4">Oops! Something went wrong</h2>
+            <h2 className="text-2xl font-bold text-white mb-4">
+              Oops! Something went wrong
+            </h2>
             <p className="text-gray-300 mb-6">
-              The application encountered an unexpected error. Don't worry, we can fix this!
+              The application encountered an unexpected error. Don't worry, we
+              can fix this!
             </p>
             <button
               onClick={() => window.location.reload()}
@@ -72,102 +81,159 @@ function AppContent() {
   return (
     <Routes>
       {/* Public routes - Always accessible */}
-      <Route path="/login" element={
-        !isAuthenticated ? <AuthPage /> : <Navigate to="/dashboard" replace />
-      } />
+      <Route
+        path="/login"
+        element={
+          !isAuthenticated ? <AuthPage /> : <Navigate to="/dashboard" replace />
+        }
+      />
 
       {/* Protected routes - Require authentication */}
-      <Route path="/" element={
-        !isAuthenticated ? <Navigate to="/login" replace /> : <Navigate to="/dashboard" replace />
-      } />
+      <Route
+        path="/"
+        element={
+          !isAuthenticated ? (
+            <Navigate to="/login" replace />
+          ) : (
+            <Navigate to="/dashboard" replace />
+          )
+        }
+      />
 
-      <Route path="/dashboard" element={
-        isAuthenticated ? (
-          <ProtectedRoute>
-            {user?.role === 'admin' ? <DashboardPage /> : <JobSeekerDashboard />}
-          </ProtectedRoute>
-        ) : (
-          <Navigate to="/login" replace />
-        )
-      } />
+      <Route
+        path="/dashboard"
+        element={
+          isAuthenticated ? (
+            <ProtectedRoute>
+              {user?.role === "admin" ? (
+                <DashboardPage />
+              ) : (
+                <JobSeekerDashboard />
+              )}
+            </ProtectedRoute>
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
 
-      <Route path="/ats" element={
-        isAuthenticated ? (
-          <ProtectedRoute requiredRole="admin">
-            <ATSPage />
-          </ProtectedRoute>
-        ) : (
-          <Navigate to="/login" replace />
-        )
-      } />
+      <Route
+        path="/ats"
+        element={
+          isAuthenticated ? (
+            <ProtectedRoute requiredRole="admin">
+              <ATSPage />
+            </ProtectedRoute>
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
 
-      <Route path="/analytics" element={
-        isAuthenticated ? (
-          <ProtectedRoute requiredRole="admin">
-            <AnalyticsPage />
-          </ProtectedRoute>
-        ) : (
-          <Navigate to="/login" replace />
-        )
-      } />
+      <Route
+        path="/analytics"
+        element={
+          isAuthenticated ? (
+            <ProtectedRoute requiredRole="admin">
+              <AnalyticsPage />
+            </ProtectedRoute>
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
 
-      <Route path="/jobs" element={
-        isAuthenticated ? (
-          <ProtectedRoute>
-            {user?.role === 'admin' ? <JobsPage /> : <JobSeekerJobsPage />}
-          </ProtectedRoute>
-        ) : (
-          <Navigate to="/login" replace />
-        )
-      } />
+      <Route
+        path="/jobs"
+        element={
+          isAuthenticated ? (
+            <ProtectedRoute>
+              {user?.role === "admin" ? <JobsPage /> : <JobSeekerJobsPage />}
+            </ProtectedRoute>
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
 
-      <Route path="/profile" element={
-        isAuthenticated ? (
-          <ProtectedRoute>
-            <ProfilePage />
-          </ProtectedRoute>
-        ) : (
-          <Navigate to="/login" replace />
-        )
-      } />
+      <Route
+        path="/profile"
+        element={
+          isAuthenticated ? (
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
 
-      <Route path="/applications" element={
-        isAuthenticated ? (
-          <ProtectedRoute>
-            {user?.role === 'admin' ? <Navigate to="/dashboard" replace /> : <JobSeekerDashboard initialSection="applications" />}
-          </ProtectedRoute>
-        ) : (
-          <Navigate to="/login" replace />
-        )
-      } />
+      <Route
+        path="/applications"
+        element={
+          isAuthenticated ? (
+            <ProtectedRoute>
+              {user?.role === "admin" ? (
+                <Navigate to="/dashboard" replace />
+              ) : (
+                <JobSeekerDashboard initialSection="applications" />
+              )}
+            </ProtectedRoute>
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
 
-      <Route path="/candidates" element={
-        isAuthenticated ? (
-          <ProtectedRoute requiredRole="admin">
-            <CandidatesPage />
-          </ProtectedRoute>
-        ) : (
-          <Navigate to="/login" replace />
-        )
-      } />
+      <Route
+        path="/candidates"
+        element={
+          isAuthenticated ? (
+            <ProtectedRoute requiredRole="admin">
+              <CandidatesPage />
+            </ProtectedRoute>
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
 
-      <Route path="/candidates-database" element={
-        isAuthenticated ? (
-          <ProtectedRoute requiredRole="admin">
-            <CandidatesDatabasePage />
-          </ProtectedRoute>
-        ) : (
-          <Navigate to="/login" replace />
-        )
-      } />
+      <Route
+        path="/interviews"
+        element={
+          isAuthenticated ? (
+            <ProtectedRoute requiredRole="admin">
+              <InterviewPage />
+            </ProtectedRoute>
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
+      <Route
+        path="/candidates-database"
+        element={
+          isAuthenticated ? (
+            <ProtectedRoute requiredRole="admin">
+              <CandidatesDatabasePage />
+            </ProtectedRoute>
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
 
       {/* Logout route */}
       <Route path="/logout" element={<LogoutHandler />} />
 
       {/* Catch all - redirect to appropriate page */}
-      <Route path="*" element={
-        <Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />
-      } />
+      <Route
+        path="*"
+        element={
+          <Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />
+        }
+      />
     </Routes>
   );
 }
@@ -182,9 +248,9 @@ function LogoutHandler() {
         await logout();
         // Navigation will be handled by the routing system
       } catch (error) {
-        console.error('Logout error:', error);
+        console.error("Logout error:", error);
         // Force logout even if API call fails
-        window.location.href = '/login';
+        window.location.href = "/login";
       }
     };
 

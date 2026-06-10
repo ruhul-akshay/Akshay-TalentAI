@@ -16,6 +16,7 @@ const candidateProfileSchema = new mongoose.Schema({
     alternatePhone: String,
     location: String,
     dateOfBirth: Date,
+    gender: String,
     profilePictureUrl: String,
     address: {
       street: String,

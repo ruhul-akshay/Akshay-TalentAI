@@ -1,4 +1,3 @@
-
 import express from "express";
 import cors from "cors";
 import path from "path";
@@ -13,9 +12,11 @@ import authRoutes from "./routes/auth.js";
 import jobSeekerRoutes from "./routes/jobSeeker.js";
 import jobRoutes from "./routes/jobs.js";
 import candidatesRoutes from "./routes/candidates.js";
+import interviewRoutes from "./routes/interview.js";
 import adminRoutes from "./routes/admin.js";
 import systemRoutes from "./routes/system.js";
 import dashboardRoutes from "./routes/dashboard.js";
+import analyzeRoutes from "./routes/analyze.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -32,8 +33,8 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 // Serve static files from uploads directory
-const uploadsPath = path.join(__dirname, '../uploads');
-app.use('/uploads', express.static(uploadsPath));
+const uploadsPath = path.join(__dirname, "../uploads");
+app.use("/uploads", express.static(uploadsPath));
 
 // Ensure upload directories exist
 const uploadDirs = [
@@ -49,13 +50,15 @@ uploadDirs.forEach((dir) => {
 });
 
 // Register routes
-app.use('/api/auth', authRoutes);
-app.use('/api/jobs', jobRoutes);
-app.use('/api/candidates', candidatesRoutes);
-app.use('/api/job-seeker', jobSeekerRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api', systemRoutes);
-app.use('/api/admin/dashboard', dashboardRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/jobs", jobRoutes);
+app.use("/api/candidates", candidatesRoutes);
+app.use("/api/job-seeker", jobSeekerRoutes);
+app.use("/api/interviews", interviewRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/system", systemRoutes);
+app.use("/api/admin/dashboard", dashboardRoutes);
+app.use("/api/analyze", analyzeRoutes);
 
 // Root route
 app.get("/", (req, res) => {
@@ -63,6 +66,7 @@ app.get("/", (req, res) => {
 });
 
 // Error handling middleware
+
 app.use((err, req, res, next) => {
   console.error("Server error:", err);
   res.status(err.status || 500).json({

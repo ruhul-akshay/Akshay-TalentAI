@@ -23,8 +23,6 @@ export default function InterviewsPage() {
     notes: "",
   });
 
-
-  
   useEffect(() => {
     fetchInterviews();
   }, []);
