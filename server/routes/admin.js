@@ -294,7 +294,7 @@ router.post("/confirm-candidate", authenticateToken, async (req, res) => {
           mobile: extractedInfo.phone || "",
           alternatePhone: extractedInfo.alternatePhone || "",
           dateOfBirth: extractedInfo.dateOfBirth || "",
-          gender: extractInfo.gender || "",
+          gender: extractedInfo.gender || "",
           currentDesignation: extractedInfo.currentRole || "",
           currentCompany: extractedInfo.currentCompany || "",
           totalExperience: extractedInfo.totalYearsExperience || "",

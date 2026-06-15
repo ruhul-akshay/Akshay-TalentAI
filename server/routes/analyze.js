@@ -8,38 +8,145 @@ const upload = multer({
 });
 
 // Analyze uploaded resumes
+// router.post("/analyze", upload.array("resumes"), async (req, res) => {
+//   try {
+//     if (!req.files || req.files.length === 0) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "No resumes uploaded",
+//       });
+//     }
+
+//     const results = req.files.map((file) => ({
+//       fileName: file.originalname,
+//       status: "success",
+//       extractedInfo: {
+//         name: "",
+//         email: "",
+//         phone: "",
+//         location: "",
+//         education: "",
+//         university: "",
+//         currentRole: "",
+//         totalYearsExperience: "",
+//         skills: [],
+//       },
+//     }));
+
+//     res.json({
+//       success: true,
+//       results,
+//     });
+//   } catch (error) {
+//     console.error(error);
+
+//     res.status(500).json({
+//       success: false,
+//       message: error.message,
+//     });
+//   }
+// });
+import pdfParse from "pdf-parse";
+
 router.post("/analyze", upload.array("resumes"), async (req, res) => {
   try {
-    if (!req.files || req.files.length === 0) {
+    if (!req.files?.length) {
       return res.status(400).json({
         success: false,
         message: "No resumes uploaded",
       });
     }
 
-    const results = req.files.map((file) => ({
-      fileName: file.originalname,
-      status: "success",
-      extractedInfo: {
-        name: "",
-        email: "",
-        phone: "",
-        location: "",
-        education: "",
-        university: "",
-        currentRole: "",
-        totalYearsExperience: "",
-        skills: [],
-      },
-    }));
+    const results = [];
+
+    for (const file of req.files) {
+      try {
+        // For memoryStorage()
+        const pdfData = await pdfParse(file.buffer);
+
+        const text = pdfData.text;
+
+        console.log("Resume Text:", text);
+
+        const email =
+          text.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i)?.[0] || "";
+
+        const phone = text.match(/(\+91[\s-]?)?[6-9]\d{9}/)?.[0] || "";
+
+        const lines = text
+          .split("\n")
+          .map((line) => line.trim())
+          .filter(Boolean);
+
+        const name = lines[0] || "";
+        const location = lines[1] || "";
+        const education =
+          lines.find((line) => /bachelor|master|ph\.?d/i.test(line)) || "";
+        const university =
+          lines.find((line) => /university|institute|college/i.test(line)) ||
+          "";
+        const currentRole =
+          lines.find((line) =>
+            /software engineer|developer|programmer|analyst/i.test(line),
+          ) || "";
+        const experienceMatches = text.match(/(\d+)\+?\s*(year|years)/gi) || [];
+        const totalYearsExperience =
+          experienceMatches.length > 0 ? experienceMatches[0] : "";
+
+        const skillKeywords = [
+          "JavaScript",
+          "React",
+          "Node.js",
+          "Express",
+          "MongoDB",
+          "MySQL",
+          "HTML",
+          "CSS",
+          "Bootstrap",
+          "Tailwind",
+          "TypeScript",
+          "Angular",
+          "Next.js",
+          "Python",
+          "Java",
+          "C#",
+          ".NET",
+          "Git",
+        ];
+
+        const skills = skillKeywords.filter((skill) =>
+          text.toLowerCase().includes(skill.toLowerCase()),
+        );
+
+        results.push({
+          fileName: file.originalname,
+          status: "success",
+          extractedInfo: {
+            name,
+            email,
+            phone,
+            location,
+            education,
+            university,
+            currentRole,
+            totalYearsExperience,
+            skills,
+          },
+        });
+      } catch (err) {
+        results.push({
+          fileName: file.originalname,
+          status: "failed",
+          error: err.message,
+        });
+      }
+    }
 
     res.json({
       success: true,
       results,
     });
   } catch (error) {
-    console.error(error);
-
     res.status(500).json({
       success: false,
       message: error.message,
@@ -48,52 +155,7 @@ router.post("/analyze", upload.array("resumes"), async (req, res) => {
 });
 
 // Calculate ATS Score
-// router.post("/single", async (req, res) => {
-//   try {
-//     const { resumeText, jobDescription } = req.body;
 
-//     if (!resumeText || !jobDescription) {
-//       return res.status(400).json({
-//         success: false,
-//         error: "Resume text and Job description are required",
-//       });
-//     }
-
-//     const result = {
-//       matchPercentage: 85,
-
-//       atsScore: {
-//         overall: 85,
-//         skillsAlignment: 80,
-//         experienceRelevance: 90,
-//       },
-
-//       skillsAnalysis: {
-//         matchingSkills: ["React", "Node.js", "MongoDB", "JavaScript"],
-//         missingSkills: [],
-//       },
-
-//       experienceAnalysis: {
-//         totalYears: 2,
-//         experienceMatch: "good",
-//       },
-
-//       hiringRecommendation: "hire",
-//     };
-
-//     res.json({
-//       success: true,
-//       data: result,
-//     });
-//   } catch (error) {
-//     console.error(error);
-
-//     res.status(500).json({
-//       success: false,
-//       error: error.message,
-//     });
-//   }
-// });
 router.post("/single", async (req, res) => {
   try {
     const { resumeText, jobDescription } = req.body;
